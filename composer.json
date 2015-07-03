@@ -1,0 +1,18 @@
+{
+    "name": "pmvc-plugin/asset",
+    "description": "PMVC asset management",
+    "type": "library",
+    "homepage": "https://github.com/pmvc-plugin/asset",
+    "keywords": ["asset", "pmvc", "plug-in"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hill",
+            "email": "hill@kimo.com"
+        }
+    ],
+    "require": {
+        "pmvc/pmvc": "*"
+    },
+    "minimum-stability": "dev"
+}
