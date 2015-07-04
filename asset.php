@@ -29,7 +29,7 @@ class asset extends p\PlugIn
                 'url'=>$v
             );
         }
-        if (PMVC\exists('url', 'plugin')) {
+        if (p\exists('url', 'plugin')) {
             $v['url'] = p\plug('url')->toHttp($v['url']);
         }
         return $v;
