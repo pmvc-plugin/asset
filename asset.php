@@ -93,7 +93,7 @@ class asset extends p\PlugIn
             foreach ($this->js[$event] as $k=>$v) {
                 switch ($v['type']) {
                     case 'file':
-                        if (@$this->isEcho[$k]) {
+                        if (isset($this->isEcho[$k])) {
                             continue;
                         }
                         $this->isEcho[$k] = true;
@@ -118,7 +118,7 @@ class asset extends p\PlugIn
             foreach ($this->css[$event] as $k=>$v) {
                 switch ($v['type']) {
                     case 'file':
-                        if (@$this->isEcho[$v['v']['url']]) {
+                        if (isset($this->isEcho[$v['v']['url']])) {
                             continue;
                         }
                         $this->isEcho[$v['v']['url']] = true;
