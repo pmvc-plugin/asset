@@ -1,6 +1,7 @@
 <?php
 namespace PMVC\PlugIn\asset;
 use PMVC as p;
+use PMVC\Event;
 ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\asset';
 
 class asset extends p\PlugIn
@@ -12,15 +13,44 @@ class asset extends p\PlugIn
 
     public function init()
     {
-        if (!function_exists('_img')) {
-            function _img()
-            {
-                $args =& func_get_args();
-                return call_user_func_array(array(_PMVC::plugIn('asset'),'img'), $args);
-            }
+        if (ob_get_length() === false) {
+            ob_start();
+        }
+        \PMVC\callPlugin(
+            'dispatcher',
+            'attach',
+            [ 
+                $this,
+                Event\B4_PROCESS_VIEW,
+            ]
+        );
+        \PMVC\callPlugin(
+            'dispatcher',
+            'attach',
+            [ 
+                $this,
+                Event\FINISH,
+            ]
+        );
+    }
+
+    public function flush($subject)
+    {
+        $subject->detach($this);
+        while (ob_get_level() > 0) {
+            ob_end_flush();
         }
     }
 
+    public function onB4ProcessView($subject)
+    {
+        $this->flush($subject);
+    }
+
+    public function onFinish($subject)
+    {
+        $this->flush($subject);
+    }
 
     public function parseFile($v)
     {
