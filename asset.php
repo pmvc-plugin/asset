@@ -133,8 +133,10 @@ class asset extends p\PlugIn
                         echo '<script language="javascript">'.$v['v'].'</script>';
                         break;
                 }
-                echo "\n";
+                echo PHP_EOL;
             }
+            flush();
+            $this->js[$event] = null;
             unset($this->js[$event]);
         }
     }
@@ -164,8 +166,10 @@ class asset extends p\PlugIn
                         echo '<style type="text/css">'.$v['v'].'</style>';
                         break;
                 }
-                echo "\n";
+                echo PHP_EOL;
             }
+            flush();
+            $this->css[$event] = null;
             unset($this->css[$event]);
         }
     }
