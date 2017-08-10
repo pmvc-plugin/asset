@@ -40,6 +40,7 @@ class asset extends p\PlugIn
         while (ob_get_level() > 0) {
             ob_end_flush();
         }
+        flush();
     }
 
     public function onB4ProcessView($subject)
@@ -135,7 +136,6 @@ class asset extends p\PlugIn
                 }
                 echo PHP_EOL;
             }
-            flush();
             $this->js[$event] = null;
             unset($this->js[$event]);
         }
@@ -168,7 +168,6 @@ class asset extends p\PlugIn
                 }
                 echo PHP_EOL;
             }
-            flush();
             $this->css[$event] = null;
             unset($this->css[$event]);
         }
