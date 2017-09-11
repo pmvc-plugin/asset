@@ -173,35 +173,4 @@ class asset extends p\PlugIn
         }
     }
 
-    public function img($url, $type=null)
-    {
-        if (preg_match('/^http/i', $url)) {
-            return;
-        }
-        $m = _PMVC::getAppName().'/';
-        if (is_null($type)) {
-            if (is_file(ROOT_MODULES.$m.'images/'.$url)) {
-                return ROOT_URL_MODULES.$m.'images/'.$url;
-            } elseif (is_file(ROOT_IMAGES.$url)) {
-                return ROOT_URL_IMAGES.$url;
-            }
-        }
-        switch ($type) {
-            case 'r':
-                return ROOT_URL_IMAGES.$url;
-            case 't':
-                $tpl='';
-                if (strlen(_PMVC::getOption(_TEMPLATE_DIR))) {
-                    $tpl = _PMVC::getOption(_TEMPLATE_DIR).'/';
-                }
-                if (is_file(ROOT_THEMES.$tpl.'images/'.$url)) {
-                    return ROOT_URL_THEMES.$tpl.'images/'.$url;
-                } else {
-                    return ROOT_URL_THEMES.'images/'.$url;
-                }
-                
-            case 'm':
-                return ROOT_URL_MODULES.$m.'images/'.$url;
-        }
-    }
 } //end class;
