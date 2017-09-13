@@ -61,7 +61,7 @@ class asset extends p\PlugIn
             );
         }
         if (p\exists('url', 'plugin')) {
-            $v['url'] = p\plug('url')->toHttp($v['url']);
+            $v['url'] = p\plug('url')->toHttp($v['url'], false);
         }
         return $v;
     }
