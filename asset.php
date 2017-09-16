@@ -6,10 +6,11 @@ ${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\asset';
 
 class asset extends p\PlugIn
 {
-    private $css=array();
-    private $js=array();
-    private $isEcho=array();
-    private $server;
+    private $css=[];
+    private $js=[];
+    private $_push=[];
+    private $isEcho=[];
+    const DEF='default';
 
     public function init()
     {
@@ -56,9 +57,9 @@ class asset extends p\PlugIn
     public function parseFile($v)
     {
         if (!isset($v['url'])) {
-            $v = array(
+            $v = [ 
                 'url'=>$v
-            );
+            ];
         }
         if (p\exists('url', 'plugin')) {
             $v['url'] = p\plug('url')->toHttp($v['url'], false);
@@ -66,10 +67,29 @@ class asset extends p\PlugIn
         return $v;
     }
 
+    public function push($url, $type)
+    {
+        $this->_push[$url] = $type;
+    }
+
+    public function getPushHeaders()
+    {
+        if (empty($this->_push)) {
+            return [];
+        }
+        $preloads = [];
+        foreach ($this->_push as $url=>$type) {
+            $preloads[] = '<'.$url.'>; rel=preload; as='.$type;
+        }
+        return [
+            'Link: '.join(', ', $preloads) 
+        ];
+    }
+
     public function importJs($file, $k=null)
     {
         if (is_null($k)) {
-            $k = 'all';
+            $k = self::DEF;
         }
         $file = $this->parseFile($file);
         $this->js[$k][$file['url']] = array(
@@ -81,7 +101,7 @@ class asset extends p\PlugIn
     public function importCss($v, $k=null)
     {
         if (is_null($k)) {
-            $k = 'all';
+            $k = self::DEF;
         }
         $this->css[$k][] = array(
             'type'=>'file'
@@ -92,7 +112,7 @@ class asset extends p\PlugIn
     public function js($str, $k=null)
     {
         if (is_null($k)) {
-            $k = 'all';
+            $k = self::DEF;
         }
         if (strlen($str)) {
             $this->js[$k][]=array(
@@ -105,7 +125,7 @@ class asset extends p\PlugIn
     public function css($str, $k=null)
     {
         if (is_null($k)) {
-            $k = 'all';
+            $k = self::DEF;
         }
         if (strlen($str)) {
             $this->css[$k][]=array(
@@ -118,7 +138,7 @@ class asset extends p\PlugIn
     public function echoJs($event=null)
     {
         if (is_null($event)) {
-            $event='all';
+            $event = self::DEF;
         }
         if (is_array($this->js[$event])) {
             foreach ($this->js[$event] as $k=>$v) {
@@ -134,7 +154,6 @@ class asset extends p\PlugIn
                         echo '<script language="javascript">'.$v['v'].'</script>';
                         break;
                 }
-                echo PHP_EOL;
             }
             $this->js[$event] = null;
             unset($this->js[$event]);
@@ -144,7 +163,7 @@ class asset extends p\PlugIn
     public function echoCss($event=null)
     {
         if (is_null($event)) {
-            $event='all';
+            $event = self::DEF;
         }
         if (isset($this->css[$event])) {
             foreach ($this->css[$event] as $k=>$v) {
@@ -166,7 +185,6 @@ class asset extends p\PlugIn
                         echo '<style type="text/css">'.$v['v'].'</style>';
                         break;
                 }
-                echo PHP_EOL;
             }
             $this->css[$event] = null;
             unset($this->css[$event]);
