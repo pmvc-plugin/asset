@@ -10,6 +10,7 @@ class asset extends p\PlugIn
     private $js=[];
     private $_push=[];
     private $isEcho=[];
+    private $_webpackState=[];
     const DEF='default';
 
     public function init()
@@ -18,21 +19,21 @@ class asset extends p\PlugIn
             ob_start();
         }
         \PMVC\callPlugin(
-            'dispatcher',
-            'attach',
-            [ 
+                'dispatcher',
+                'attach',
+                [ 
                 $this,
                 Event\B4_PROCESS_VIEW,
-            ]
-        );
+                ]
+                );
         \PMVC\callPlugin(
-            'dispatcher',
-            'attach',
-            [ 
+                'dispatcher',
+                'attach',
+                [ 
                 $this,
                 Event\FINISH,
-            ]
-        );
+                ]
+                );
     }
 
     public function flush($subject)
@@ -44,14 +45,45 @@ class asset extends p\PlugIn
         flush();
     }
 
+    /**
+     * Dispatch event function
+     */
     public function onB4ProcessView($subject)
     {
         $this->flush($subject);
     }
 
+    /**
+     * Dispatch event function
+     */
     public function onFinish($subject)
     {
         $this->flush($subject);
+    }
+
+    private function _initWebpackState()
+    {
+        $view = \PMVC\plug('view');
+        $root = $view['themeFolder'];
+        $stateFile = $view->get('webpackStateFile'); 
+        $path = \PMVC\realPath(\PMVC\lastSlash($root).'assets/'.$stateFile);
+        if ($path) {
+            $json = \PMVC\fromJson(file_get_contents($path));
+            $this->_webpackState = \PMVC\get($json, 'chunks');
+        }
+    }
+
+    public function webpack($key, array $att=[], $pathOnly=false)
+    {
+        if (empty($this->_webpackState)) {
+            $this->_initWebpackState();
+        }
+        $js = \PMVC\value($this->_webpackState, [$key, 0, 'publicPath']);
+        if ($pathOnly) {
+            return $js;
+        }
+        $att[] = 'src="'.$js.'"';
+        return $this->getJsTag($att);
     }
 
     public function parseFile($v)
@@ -135,6 +167,16 @@ class asset extends p\PlugIn
         }
     }
 
+    public function getJsTag(array $att=[], $content='')
+    {
+        $sAtt = '';
+        if (!empty($att)) {
+            $sAtt = join(' ', $att);
+        }
+        $s = '<script type="text/javascript" '.$sAtt.'>'.$content.'</script>';
+        return $s;
+    }
+
     public function echoJs($event=null)
     {
         if (is_null($event)) {
@@ -148,10 +190,10 @@ class asset extends p\PlugIn
                             continue;
                         }
                         $this->isEcho[$k] = true;
-                        echo '<script language="javascript" src="'.$v['v']['url'].'"></script>';
+                        echo $this->getJsTag(['src="'.$v['v']['url'].'"']);
                         break;
                     case 'string':
-                        echo '<script language="javascript">'.$v['v'].'</script>';
+                        echo $this->getJsTag([], $v['v']);
                         break;
                 }
             }
