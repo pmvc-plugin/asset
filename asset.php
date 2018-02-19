@@ -177,23 +177,28 @@ class asset extends p\PlugIn
         return $s;
     }
 
-    public function echoJs($event=null)
+    public function echoJs($event=null, array $att=[])
     {
         if (is_null($event)) {
             $event = self::DEF;
         }
         if (is_array($this->js[$event])) {
             foreach ($this->js[$event] as $k=>$v) {
+                $thisAtt = $att;
                 switch ($v['type']) {
                     case 'file':
                         if (isset($this->isEcho[$k])) {
                             continue;
                         }
                         $this->isEcho[$k] = true;
-                        echo $this->getJsTag(['src="'.$v['v']['url'].'"']);
+                        array_push(
+                            $thisAtt,
+                            'src="'.$v['v']['url'].'"'
+                        );
+                        echo $this->getJsTag($thisAtt);
                         break;
                     case 'string':
-                        echo $this->getJsTag([], $v['v']);
+                        echo $this->getJsTag($thisAtt, $v['v']);
                         break;
                 }
             }
