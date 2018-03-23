@@ -8,9 +8,10 @@ class asset extends p\PlugIn
 {
     private $css=[];
     private $js=[];
-    private $_push=[];
     private $isEcho=[];
+    private $_push=[];
     private $_webpackState=[];
+    private $_preload = [];
     const DEF='default';
 
     public function init()
@@ -19,21 +20,21 @@ class asset extends p\PlugIn
             ob_start();
         }
         \PMVC\callPlugin(
-                'dispatcher',
-                'attach',
-                [ 
+            'dispatcher',
+            'attach',
+            [ 
                 $this,
                 Event\B4_PROCESS_VIEW,
-                ]
-                );
+            ]
+        );
         \PMVC\callPlugin(
-                'dispatcher',
-                'attach',
-                [ 
+            'dispatcher',
+            'attach',
+            [ 
                 $this,
                 Event\FINISH,
-                ]
-                );
+            ]
+        );
     }
 
     public function flush($subject)
@@ -102,6 +103,14 @@ class asset extends p\PlugIn
     public function push($url, $type)
     {
         $this->_push[$url] = $type;
+    }
+
+    public function preload($url, $as, $type='preload')
+    {
+        $this->_preload[$url] = [
+            'as'   => $as,
+            'type' => $type
+        ];
     }
 
     public function getPushHeaders()
@@ -222,7 +231,7 @@ class asset extends p\PlugIn
                         $this->isEcho[$v['v']['url']] = true;
                         $v['v']['href'] = $v['v']['url'];
                         unset($v['v']['url']);
-                        $p=array();
+                        $p=[];
                         foreach ($v['v'] as $i=>$j) {
                             $p[$i]=$i.'="'.$j.'"';
                         }
@@ -235,6 +244,13 @@ class asset extends p\PlugIn
             }
             $this->css[$event] = null;
             unset($this->css[$event]);
+        }
+    }
+
+    public function echoPreload()
+    {
+        foreach ($this->_preload as $k=>$v) {
+            echo '<link rel="'.$v['type'].'" as="'.$v['as'].'" href="'.$k.'" />';
         }
     }
 
