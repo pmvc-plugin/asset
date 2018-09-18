@@ -37,9 +37,8 @@ class asset extends p\PlugIn
         );
     }
 
-    public function flush($subject)
+    public function flush()
     {
-        $subject->detach($this);
         while (ob_get_level() > 0) {
             ob_end_flush();
         }
@@ -51,7 +50,8 @@ class asset extends p\PlugIn
      */
     public function onB4ProcessView($subject)
     {
-        $this->flush($subject);
+        $subject->detach($this);
+        $this->flush();
     }
 
     /**
@@ -59,7 +59,8 @@ class asset extends p\PlugIn
      */
     public function onFinish($subject)
     {
-        $this->flush($subject);
+        $subject->detach($this);
+        $this->flush();
     }
 
     private function _initWebpackState()
@@ -188,6 +189,7 @@ class asset extends p\PlugIn
 
     public function echoJs($event=null, array $att=[])
     {
+        $this->flush();
         if (is_null($event)) {
             $event = self::DEF;
         }
@@ -218,6 +220,7 @@ class asset extends p\PlugIn
     
     public function echoCss($event=null)
     {
+        $this->flush();
         if (is_null($event)) {
             $event = self::DEF;
         }
@@ -249,6 +252,7 @@ class asset extends p\PlugIn
 
     public function echoPreload()
     {
+        $this->flush();
         foreach ($this->_preload as $k=>$v) {
             echo '<link rel="'.$v['type'].'" as="'.$v['as'].'" href="'.$k.'" />';
         }
