@@ -65,10 +65,13 @@ class asset extends p\PlugIn
 
     private function _initWebpackState()
     {
-        $view = \PMVC\plug('view');
-        $root = $view['themeFolder'];
-        $stateFile = $view->get('webpackStateFile'); 
-        $path = \PMVC\realPath(\PMVC\lastSlash($root).'assets/'.$stateFile);
+        if (!$this['assetsFolder']) {
+          $this['assetsFolder'] = \PMVC\plug('view')['themeFolder'];
+        }
+        if (!$this['webpackStateFile']) {
+          $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile');
+        }
+        $path = \PMVC\realPath(\PMVC\lastSlash($this['assetsFolder']).$this['webpackStateFile']);
         if ($path) {
             $json = \PMVC\fromJson(file_get_contents($path));
             $this->_webpackState = \PMVC\get($json, 'chunks');
