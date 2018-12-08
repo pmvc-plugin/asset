@@ -71,10 +71,13 @@ class asset extends p\PlugIn
         if (!$this['webpackStateFile']) {
           $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile');
         }
-        $path = \PMVC\realPath(\PMVC\lastSlash($this['assetsFolder']).$this['webpackStateFile']);
-        if ($path) {
+        $path = \PMVC\lastSlash($this['assetsFolder']).$this['webpackStateFile'];
+        $realPath = \PMVC\realPath($path);
+        if ($realPath) {
             $json = \PMVC\fromJson(file_get_contents($path));
             $this->_webpackState = \PMVC\get($json, 'chunks');
+        } else {
+            trigger_error('Not found webpack state file. ['.$path.']', E_USER_WARNING);
         }
     }
 

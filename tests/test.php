@@ -15,6 +15,9 @@ class AssetTest extends PHPUnit_Framework_TestCase
         $this->assertContains($this->_plug, $output);
     }
 
+    /**
+     * @expectedException PHPUnit_Framework_Error
+     */
     function testWebPack()
     {
       $fakeThemeFolder = 'fakeThemeFolder';
