@@ -39,6 +39,9 @@ class asset extends p\PlugIn
 
     public function flush()
     {
+        if (false === $this['flush']) {
+          return;
+        }
         while (ob_get_level() > 0) {
             ob_end_flush();
         }
