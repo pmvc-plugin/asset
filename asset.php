@@ -40,7 +40,7 @@ class asset extends p\PlugIn
     public function flush()
     {
         if (false === $this['flush']) {
-          return;
+            return;
         }
         while (ob_get_level() > 0) {
             ob_end_flush();
@@ -69,10 +69,10 @@ class asset extends p\PlugIn
     private function _initWebpackState()
     {
         if (!$this['assetsFolder']) {
-          $this['assetsFolder'] = \PMVC\plug('view')['themeFolder'];
+            $this['assetsFolder'] = \PMVC\plug('view')['themeFolder'];
         }
         if (!$this['webpackStateFile']) {
-          $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile');
+            $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile');
         }
         $path = \PMVC\lastSlash($this['assetsFolder']).$this['webpackStateFile'];
         $realPath = \PMVC\realPath($path);
@@ -206,20 +206,19 @@ class asset extends p\PlugIn
             foreach ($this->js[$event] as $k=>$v) {
                 $thisAtt = $att;
                 switch ($v['type']) {
-                    case 'file':
-                        if (isset($this->isEcho[$k])) {
-                            continue;
-                        }
+                case 'file':
+                    if (!isset($this->isEcho[$k])) {
                         $this->isEcho[$k] = true;
                         array_push(
                             $thisAtt,
                             'src="'.$v['v']['url'].'"'
                         );
                         echo $this->getJsTag($thisAtt);
-                        break;
-                    case 'string':
-                        echo $this->getJsTag($thisAtt, $v['v']);
-                        break;
+                    }
+                    break;
+                case 'string':
+                    echo $this->getJsTag($thisAtt, $v['v']);
+                    break;
                 }
             }
             $this->js[$event] = null;
@@ -235,23 +234,23 @@ class asset extends p\PlugIn
         }
         if (isset($this->css[$event])) {
             foreach ($this->css[$event] as $k=>$v) {
+                $vv = $v['v'];
                 switch ($v['type']) {
-                    case 'file':
-                        if (isset($this->isEcho[$v['v']['url']])) {
-                            continue;
-                        }
-                        $this->isEcho[$v['v']['url']] = true;
-                        $v['v']['href'] = $v['v']['url'];
-                        unset($v['v']['url']);
+                case 'file':
+                    if (!isset($this->isEcho[$vv['url']])) {
+                        $this->isEcho[$vv['url']] = true;
+                        $vv['href'] = $vv['url'];
+                        unset($vv['url']);
                         $p=[];
-                        foreach ($v['v'] as $i=>$j) {
+                        foreach ($vv as $i=>$j) {
                             $p[$i]=$i.'="'.$j.'"';
                         }
                         echo '<link rel="stylesheet" type="text/css" '.join(' ', $p).' />';
-                        break;
-                    case'string':
-                        echo '<style type="text/css">'.$v['v'].'</style>';
-                        break;
+                    }
+                    break;
+                case'string':
+                    echo '<style type="text/css">'.$vv.'</style>';
+                    break;
                 }
             }
             $this->css[$event] = null;
