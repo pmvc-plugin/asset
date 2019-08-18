@@ -2,7 +2,8 @@
 namespace PMVC\PlugIn\asset;
 use PMVC as p;
 use PMVC\Event;
-${_INIT_CONFIG}[_CLASS] = __NAMESPACE__.'\asset';
+${_INIT_CONFIG
+}[_CLASS] = __NAMESPACE__.'\asset';
 
 class asset extends p\PlugIn
 {
@@ -89,7 +90,14 @@ class asset extends p\PlugIn
         if (empty($this->_webpackState)) {
             $this->_initWebpackState();
         }
-        $js = \PMVC\value($this->_webpackState, [$key, 0, 'publicPath']);
+        $keyPath = [$key, 0, 'publicPath'];
+        $js = \PMVC\value($this->_webpackState, $keyPath);
+        if (empty($js)) {
+          return \PMVC\triggerJson(
+            'Webpack key('.$key.') publicPath not found.',
+            ['key'=>$key, 'keys'=>$this->_webpackState, 'path'=> join('->', $keyPath)]
+          );
+        }
         if ($pathOnly) {
             return $js;
         }
