@@ -73,7 +73,7 @@ class asset extends p\PlugIn
             $this['assetsFolder'] = \PMVC\plug('view')['themeFolder'];
         }
         if (!$this['webpackStateFile']) {
-            $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile');
+            $this['webpackStateFile'] = \PMVC\plug('view')->get('webpackStateFile', 'assets/stats.json');
         }
         $path = \PMVC\lastSlash($this['assetsFolder']).$this['webpackStateFile'];
         $realPath = \PMVC\realPath($path);
