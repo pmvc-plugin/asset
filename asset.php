@@ -25,7 +25,7 @@ class asset extends p\PlugIn
             'attach',
             [ 
                 $this,
-                Event\B4_PROCESS_VIEW,
+                Event\WILL_PROCESS_VIEW,
             ]
         );
         \PMVC\callPlugin(
@@ -52,7 +52,7 @@ class asset extends p\PlugIn
     /**
      * Dispatch event function
      */
-    public function onB4ProcessView($subject)
+    public function onWillProcessView($subject)
     {
         $subject->detach($this);
         $this->flush();
