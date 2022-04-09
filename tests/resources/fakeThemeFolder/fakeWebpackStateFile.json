@@ -1,0 +1,12 @@
+{
+  "chunks": {
+    "foo": [
+      {
+        "name": "main.bundle.js",
+        "publicPath": "/0force/assets/main.bundle.js?3f0df6887c483d197d4f"
+      }
+    ]
+  },
+  "publicPath": "/0force/assets/",
+  "status": "done"
+}
