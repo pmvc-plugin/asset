@@ -84,6 +84,7 @@ class asset extends p\PlugIn
     {
         if (empty($att)) {
             switch ($key) {
+                case 'lib':
                 case 'vendor':
                     $att = ['async'];
                     break;
