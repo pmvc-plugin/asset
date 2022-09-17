@@ -49,7 +49,8 @@ class AssetTest extends TestCase
         ]);
         $view->set('webpackStateFile', $fakeWebpackStateFile);
         $p = \PMVC\plug($this->_plug);
-        $p->webpack('foo', [], true);
+        $publicPath = $p->webpack('foo', [], true);
+        $this->assertEquals($publicPath, "http://localhost:3000/assets/main.bundle.js?3f0df6887c483d197d4f");
         $this->assertEquals($p['assetsFolder'], $fakeThemeFolder);
         $this->assertEquals($p['webpackStateFile'], $fakeWebpackStateFile);
     }

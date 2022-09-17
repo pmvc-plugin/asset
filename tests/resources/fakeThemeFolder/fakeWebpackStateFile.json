@@ -1,11 +1,14 @@
 {
+  "status": "done",
   "chunks": {
-    "foo": [
-      {
-        "name": "main.bundle.js",
-        "publicPath": "/0force/assets/main.bundle.js?3f0df6887c483d197d4f"
-      }
-    ]
+    "foo": ["main.bundle.js"]
+  },
+  "assets": {
+    "main.bundle.js": {
+      "name": "main.bundle.js",
+      "publicPath": "http://localhost:3000/assets/main.bundle.js?3f0df6887c483d197d4f",
+      "path": "/home/user/project-root/assets/bundles/main.bundle.js"
+    }
   },
   "publicPath": "/0force/assets/",
   "status": "done"
